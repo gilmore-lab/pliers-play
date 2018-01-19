@@ -1,0 +1,7 @@
+# Install pliers dependencies
+# in a clean python 2.7 environment
+
+pip install pliers
+pip install -r optional-dependencies.txt
+pip install --upgrade google-api-python-client
+pip install SpeechRecognition

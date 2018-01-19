@@ -1,0 +1,51 @@
+---
+title: "Exploring pliers"
+author: "Rick Gilmore"
+date: "`r Sys.time()`"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{python}
+# From https://github.com/tyarkoni/pliers#example-the-first
+import pliers
+from pliers.extractors import GoogleVisionAPIFaceExtractor
+
+ext = GoogleVisionAPIFaceExtractor()
+result = ext.transform('obama.jpg').to_df()
+```
+
+```{python}
+from pliers.stimuli import VideoStim
+from pliers.extractors import (STFTAudioExtractor, PredefinedDictionaryExtractor, ComplexTextExtractor, ClarifaiAPIExtractor, IndicoAPITextExtractor)
+from pliers.filters import FrameSamplingFilter
+from pliers.graph import Graph
+
+# Initialize the video clips from files as new VideoStims. Note that the
+# second line is optional; pliers will infer that the clips are video
+# files based on their extensions. But it's good practice to be explicit.
+clips = ['../pliers/tests/data/video/obama_speech.mp4']
+clips = [VideoStim(f) for f in clips]
+
+# Initialize graph--note that we don't need to include any Stim type manipulation
+# nodes, as they will be injected automatically. We make an exception for
+# the FrameSamplingFilter, because we don't want to analyze every
+# single video frame--that would just waste resources. Also note that each
+# element in the node list can be either a string or an Extractor instance.
+# We don't need to bother initializing Extractors unless we need to pass
+# arguments.
+nodes = [
+    (FrameSamplingFilter(hertz=1),
+         ['ClarifaiAPIExtractor', 'TensorFlowInceptionV3Extractor']),
+    STFTAudioExtractor(hop_size=1, freq_bins=[(100, 300), (300, 3000), (3000, 20000)]),
+    PredefinedDictionaryExtractor(['subtlexusfrequency/Lg10WF']),
+    IndicoAPITextExtractor(models=['sentiment'])
+]
+g = Graph(nodes)
+
+# Execute graph and collect results
+result = g.run(clips)
+```
