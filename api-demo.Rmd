@@ -1,0 +1,50 @@
+---
+title: "api-demo"
+author: "Rick Gilmore"
+date: "1/18/2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{bash}
+source activate pliers
+source ~/.bash_profile
+```
+
+So, this just doesn't work. 2018-01-18-21:39.
+
+```{python}
+# Seems odd to have to do this, but maybe the conda environment doesn't work
+import pliers
+```
+
+## Extracting emotion from faces
+
+What are these guys feeling?
+
+<img src="img/obama.jpg" height=200pix/>
+
+<img src="img/trump.jpg" height=200pix/>
+
+Can AI tell us?
+
+```{python}
+from pliers.extractors import GoogleVisionAPIFaceExtractor
+
+obama_img = 'img/obama.jpg'
+trump_img = 'img/trump.jpg'
+
+ext = GoogleVisionAPIFaceExtractor()
+
+obama = ext.transform(obama_img).to_df()
+trump = ext.transform(trump_img).to_df()
+
+print(obama['angerLikelihood'])
+print(obama['joyLikelihood'])
+print(trump['angerLikelihood'])
+print(trump['joyLikelihood'])
+```
+

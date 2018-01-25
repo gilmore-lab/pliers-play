@@ -1,4 +1,6 @@
 # peep_transcript.py
+import imageio
+imageio.plugins.ffmpeg.download()
 import speech_recognition
 from pliers.converters import IBMSpeechAPIConverter
 
